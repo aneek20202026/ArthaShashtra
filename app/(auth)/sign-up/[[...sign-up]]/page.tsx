@@ -54,7 +54,7 @@ export default function Page() {
                 </button>
               </div>
 
-              <p className="text-sm !mt-8 text-center text-gray-500">Don't have an account <a href="javascript:void(0);" className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</a></p>
+              <p className="text-sm !mt-8 text-center text-gray-500">Don&apos;t have an account <a href="javascript:void(0);" className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</a></p>
             </form>
           </div>
           <div className="max-md:mt-8">
