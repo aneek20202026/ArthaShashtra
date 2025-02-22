@@ -68,10 +68,10 @@ export default function Navbar() {
                                     <a key={link.label} href={link.href} className="">{link.label}</a>
                                 ))}
                                  <a href="/Start">
-                                <button className="text-indigo-700 border-indigo-700 border-2 rounded-[20px] px-5 py-2" >Log In</button>
+                                <button className="text-lime-300 border-lime-300 border-2 rounded-[20px] px-5 py-2" >Log In</button>
                                 </a>
                                 <a href="/Start">
-                                <button className="text-white bg-indigo-700 px-4 py-2 rounded-[20px] ">Sign Up</button>
+                                <button className="text-white bg-lime-600 px-4 py-2 rounded-[20px] ">Sign Up</button>
                                 </a>
                                 </div>
                             </motion.div>}
