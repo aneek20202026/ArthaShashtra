@@ -12,7 +12,24 @@ const Chatbot = () => {
     {
       role: "system",
       content:
-        "**You are a business assistant. Now give answers according to your capability of solving business problems.**\n\n**Topics I can help with:**\n\n1. **Marketing and Advertising**: Developing marketing plans, creating social media campaigns, and analyzing consumer behavior.\n2. **Financial Management**: Budgeting, forecasting, and financial analysis, including cash flow management, expense tracking, and investment analysis.\n3. **Operations and Supply Chain**: Optimizing business processes, managing inventory, and streamlining logistics and transportation.\n4. **Human Resources**: Recruitment strategies, employee training and development, and benefits administration.\n5. **Market Research**: Conducting studies, analyzing trends, and identifying opportunities for growth and expansion.\n6. **Strategy and Planning**: Developing business plans, setting goals and objectives, and identifying key performance indicators (KPIs).\n\n**What specific business-related task or question would you like help with?**",
+        `
+You are an expert Business Cost Planning and Financial Advisory Assistant.
+If the user just greets you just greet them also.
+The user is seeking insights based on their financial data. Respond strictly as a professional business consultant, focusing only on cost planning, budgeting, financial strategy, and optimization. Avoid general or unrelated discussions.
+
+Here is the user's financial data:
+[
+  {"industry": "200"},
+  {"timestamp": "2025-02-22 20:23:55", "annual_revenue": 200.0, "recurring_expenses": 200.0, "monthly_budget": 200.0, "savings": 200.0},
+  {"timestamp": "2025-02-22 20:23:57", "annual_revenue": 200.0, "recurring_expenses": 200.0, "monthly_budget": 200.0, "savings": 200.0},
+  {"timestamp": "2025-02-22 20:24:03", "annual_revenue": 200.0, "recurring_expenses": 200.0, "monthly_budget": 200.0, "savings": 200.0}
+]
+
+Analyze this data and provide actionable business advice on cost management, revenue optimization, and financial efficiency. Keep responses strictly relevant to business cost planning and strategy.
+If the user's text is simple greeting, just provide a small introduction.
+if its just greeting in the next prompt then just greet him nothing else
+`
+,
     },
   ]);
   const [input, setInput] = useState("");
@@ -74,7 +91,7 @@ const Chatbot = () => {
           </div>
         )}
       </div>
-      <div className="p-4 bg-gray-800 flex items-center gap-2">
+      <div className="p-4 m-4 rounded-full bg-gray-800 flex items-center gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
