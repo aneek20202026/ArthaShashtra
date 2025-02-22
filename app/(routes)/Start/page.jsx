@@ -1,13 +1,18 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { WelcomeQues } from "@/lib/welcomeques";
 import Reveal from "@/app/_components/Reveal";
+import { useUser } from "@clerk/nextjs";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 function WelcomeForm() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [alertMessage, setAlertMessage] = useState("");
-
+  const [loading, setLoading] = useState(false);
+  const { user, isLoaded } = useUser();
+  const router=useRouter();
   const currentQuestion = WelcomeQues[currentIndex];
 
   const showAlert = (message) => {
@@ -31,42 +36,81 @@ function WelcomeForm() {
     setAnswers((prev) => ({ ...prev, [currentQuestion.question]: value }));
   };
 
-  const handleSubmit = () => {
-    if (answers[currentQuestion.question]) {
-      console.log("Form Submitted", answers);
-    } else {
-      showAlert("Please answer the question before submitting.");
+  const handleSubmit = async () => {
+    if (!isLoaded || !user?.id) {
+      showAlert("User not loaded. Please try again.");
+      return;
     }
+
+    // Mapping question texts to required field names
+    const formattedData = {
+      uid: user.id,
+      industry: answers["What Industry you are in?"],
+      annual_revenue: answers["What is your Annual Revenue?"],
+      recurring_expenses: answers["How much is your Recurring Expenses?"],
+      monthly_budget: answers["What is your Monthly budget?"],
+      savings: answers["How much is your Monthly Savings ?"],
+    };
+
+    // Validate required fields
+    for (let key in formattedData) {
+      if (!formattedData[key]) {
+        showAlert(`Please provide ${key.replace(/_/g, " ")} before submitting.`);
+        return;
+      }
+    }
+const api=process.env.NEXT_PUBLIC_API_URL;
+    setLoading(true);
+    try {
+      console.log("Submitting Data:", formattedData); // Debugging
+
+      const response = await fetch(`${api}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        showAlert("Successfully submitted!");
+      router.push('/Dashboard');
+      } else {
+        showAlert(result.message || "Submission failed.");
+      }
+    } catch (error) {
+      showAlert("Error submitting form.");
+      console.error("Submission error:", error);
+    }
+    setLoading(false);
   };
 
   return (
     <section className="bg-gray-50 h-screen flex items-center justify-center bg-[url('https://pagedone.io/asset/uploads/1691055810.png')] bg-center bg-cover">
-        {alertMessage && (
-          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-md shadow-md">
-            {alertMessage}
-          </div>
-        )}
+      {alertMessage && (
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-md shadow-md">
+          {alertMessage}
+        </div>
+      )}
       <div className="max-w-md text-center border-indigo-900 border-2 rounded-lg p-6 bg-white/10 backdrop-blur relative">
         <h1 className="text-2xl font-extrabold sm:text-3xl mb-4">
           {currentQuestion.question}
         </h1>
         {currentQuestion.type === "opt" ? (
-
           <div className="flex flex-col gap-2">
             {currentQuestion.options.map((option, index) => (
               <Reveal key={index}>
-              <button
-                
-                onClick={() => handleChange(option)}
-                className={`px-4 py-2 rounded-md border w-full text-center transition duration-300 ${
-    answers[currentQuestion.question] === option
-                    ? "bg-indigo-600 text-white"
-                    : "border-gray-300 hover:bg-gray-200"
-                }`}
-                
-              >
-                {option}
-              </button>
+                <button
+                  onClick={() => handleChange(option)}
+                  className={`px-4 py-2 rounded-md border w-full text-center transition duration-300 ${
+                    answers[currentQuestion.question] === option
+                      ? "bg-indigo-600 text-white"
+                      : "border-gray-300 hover:bg-gray-200"
+                  }`}
+                >
+                  {option}
+                </button>
               </Reveal>
             ))}
           </div>
@@ -98,8 +142,9 @@ function WelcomeForm() {
             <button
               onClick={handleSubmit}
               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              disabled={loading}
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </button>
           )}
         </div>
