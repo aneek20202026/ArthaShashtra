@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { WelcomeQues } from "@/lib/welcomeques";
 import Reveal from "@/app/_components/Reveal";
 import { useUser } from "@clerk/nextjs";
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 
 function WelcomeForm() {
@@ -11,9 +10,40 @@ function WelcomeForm() {
   const [answers, setAnswers] = useState({});
   const [alertMessage, setAlertMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkingUser, setCheckingUser] = useState(true); // New state for checking user
   const { user, isLoaded } = useUser();
-  const router=useRouter();
-  const currentQuestion = WelcomeQues[currentIndex];
+  const router = useRouter();
+
+  const api = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(() => {
+    if (!isLoaded || !user?.id) return;
+    checkUserExists(user.id);
+  }, [isLoaded, user?.id]);
+
+  // Check if user data already exists
+  const checkUserExists = async (userId) => {
+    try {
+      const response = await fetch(`${api}/userData`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: userId }),
+      });
+
+      const data = await response.json();
+      if (data.message && data.message.length > 0) {
+        const financialData = data.message.find((item) => item.annual_revenue !== undefined);
+        if (financialData) {
+          console.log("User already has financial data, redirecting...");
+          router.push("/Dashboard");
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Error checking user data:", error);
+    }
+    setCheckingUser(false); // Hide loader after determining the task
+  };
 
   const showAlert = (message) => {
     setAlertMessage(message);
@@ -21,7 +51,7 @@ function WelcomeForm() {
   };
 
   const handleNext = () => {
-    if (answers[currentQuestion.question]) {
+    if (answers[WelcomeQues[currentIndex].question]) {
       setCurrentIndex((prev) => prev + 1);
     } else {
       showAlert("Please answer the question before proceeding.");
@@ -33,7 +63,7 @@ function WelcomeForm() {
   };
 
   const handleChange = (value) => {
-    setAnswers((prev) => ({ ...prev, [currentQuestion.question]: value }));
+    setAnswers((prev) => ({ ...prev, [WelcomeQues[currentIndex].question]: value }));
   };
 
   const handleSubmit = async () => {
@@ -42,7 +72,6 @@ function WelcomeForm() {
       return;
     }
 
-    // Mapping question texts to required field names
     const formattedData = {
       uid: user.id,
       industry: answers["What Industry you are in?"],
@@ -52,30 +81,25 @@ function WelcomeForm() {
       savings: answers["How much is your Monthly Savings ?"],
     };
 
-    // Validate required fields
     for (let key in formattedData) {
       if (!formattedData[key]) {
         showAlert(`Please provide ${key.replace(/_/g, " ")} before submitting.`);
         return;
       }
     }
-const api=process.env.NEXT_PUBLIC_API_URL;
+
     setLoading(true);
     try {
-      console.log("Submitting Data:", formattedData); // Debugging
-
       const response = await fetch(`${api}/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
       });
 
       const result = await response.json();
       if (response.ok) {
         showAlert("Successfully submitted!");
-      router.push('/Dashboard');
+        router.push("/Dashboard");
       } else {
         showAlert(result.message || "Submission failed.");
       }
@@ -93,62 +117,71 @@ const api=process.env.NEXT_PUBLIC_API_URL;
           {alertMessage}
         </div>
       )}
-      <div className="max-w-md text-center border-indigo-900 border-2 rounded-lg p-6 bg-white/10 backdrop-blur relative">
-        <h1 className="text-2xl font-extrabold sm:text-3xl mb-4">
-          {currentQuestion.question}
-        </h1>
-        {currentQuestion.type === "opt" ? (
-          <div className="flex flex-col gap-2">
-            {currentQuestion.options.map((option, index) => (
-              <Reveal key={index}>
-                <button
-                  onClick={() => handleChange(option)}
-                  className={`px-4 py-2 rounded-md border w-full text-center transition duration-300 ${
-                    answers[currentQuestion.question] === option
-                      ? "bg-indigo-600 text-white"
-                      : "border-gray-300 hover:bg-gray-200"
-                  }`}
-                >
-                  {option}
-                </button>
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <input
-            type="text"
-            value={answers[currentQuestion.question] || ""}
-            onChange={(e) => handleChange(e.target.value)}
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-          />
-        )}
-        <div className="mt-6 flex justify-between">
-          {currentIndex > 0 && (
-            <button
-              onClick={handlePrev}
-              className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
-            >
-              Previous
-            </button>
-          )}
-          {currentIndex < WelcomeQues.length - 1 ? (
-            <button
-              onClick={handleNext}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmit}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-              disabled={loading}
-            >
-              {loading ? "Submitting..." : "Submit"}
-            </button>
-          )}
+
+      {/* Show Loader While Checking User */}
+      {checkingUser ? (
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+          <p className="mt-4 text-white text-lg font-semibold">Checking your details...</p>
         </div>
-      </div>
+      ) : (
+        <div className="max-w-md text-center border-indigo-900 border-2 rounded-lg p-6 bg-white/10 backdrop-blur relative">
+          <h1 className="text-2xl font-extrabold sm:text-3xl mb-4">
+            {WelcomeQues[currentIndex].question}
+          </h1>
+          {WelcomeQues[currentIndex].type === "opt" ? (
+            <div className="flex flex-col gap-2">
+              {WelcomeQues[currentIndex].options.map((option, index) => (
+                <Reveal key={index}>
+                  <button
+                    onClick={() => handleChange(option)}
+                    className={`px-4 py-2 rounded-md border w-full text-center transition duration-300 ${
+                      answers[WelcomeQues[currentIndex].question] === option
+                        ? "bg-indigo-600 text-white"
+                        : "border-gray-300 hover:bg-gray-200"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <input
+              type="text"
+              value={answers[WelcomeQues[currentIndex].question] || ""}
+              onChange={(e) => handleChange(e.target.value)}
+              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          )}
+          <div className="mt-6 flex justify-between">
+            {currentIndex > 0 && (
+              <button
+                onClick={handlePrev}
+                className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
+              >
+                Previous
+              </button>
+            )}
+            {currentIndex < WelcomeQues.length - 1 ? (
+              <button
+                onClick={handleNext}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

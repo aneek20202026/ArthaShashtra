@@ -108,7 +108,7 @@ const Page = () => {
         ))}
       </div>
 
-      <div className="flex items-center justify-center w-[400px] md:w-[800px] h-[40px] mx-auto mt-8">
+      <div className="flex items-center justify-center max-w-[400px] md:w-[800px] h-[40px] mx-auto mt-8">
         <a href="/Chanakya">
           <button className="bg-white text-center w-[400px] md:w-[800px] rounded-2xl h-14 text-black text-xl font-semibold group relative">
             <div className="bg-lime-500 rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[392px] md:group-hover:w-[792px] z-10 duration-500">

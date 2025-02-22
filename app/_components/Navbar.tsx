@@ -15,14 +15,14 @@ const navLinks = [
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     return <>
-        <section className="py-4 lg:py-8 fixed w-full top-0 z-50 mx-auto">
+        <section className="py-4  lg:py-8 fixed w-full top-0 z-50 mx-1">
             <div className="container max-w-5xl mx-auto">
-                <div className="border border-black rounded-[27px] md:rounded-[20px]  bg-gradient-to-l from-slate-50 to-indigo-300/10  text-indigo-600 backdrop-blur">
+                <div className="border border-gray-100 rounded-[27px] md:rounded-[20px]   text-lime-300 backdrop-blur">
                     <div className="grid grid-cols-2 lg:grid-cols-3  p-2 px-4 md:pr-2   items-center">
                         <div>
                             <Link href="/">
                             {/* <Image src=" " alt="ArthaShastra" width={1000} height={1000} className=" h-16  w-auto" /> */}
-                            <p className="text-black font-bold text-2xl">ArthaShastra</p>
+                            <p className="text-gray-200 font-bold text-2xl">ArthaShastra</p>
                             </Link>
                         </div>
                         <div className="lg:flex justify-center items-center hidden">
@@ -30,14 +30,14 @@ export default function Navbar() {
 
                                 {
                                     navLinks.map((link) => (
-                                        <a key={link.label} href={link.href} className="text-indigo-700 font-medium hover:text-indigo-300">{link.label}</a>
+                                        <a key={link.label} href={link.href} className="text-lime-300 font-medium hover:text-lime-300">{link.label}</a>
                                     ))
                                 }
                             </nav>
 
                         </div>
                         <div className="flex justify-end gap-4 ">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-menu md:hidden"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather text-lime-300 feather-menu md:hidden"
                                 onClick={() => setIsOpen(!isOpen)}
                             >
                                 <line x1="3" y1="12" x2="21" y2="12" className={twMerge("transition", isOpen && "opacity-0")}></line>
@@ -46,11 +46,11 @@ export default function Navbar() {
                             </svg>
                             <a href="/Start">
 
-                            <button className="hidden md:inline-flex items-center border border-indigo-600 rounded-xl px-3 py-2 text-black ">Log In</button>
+                            <button className="hidden md:inline-flex items-center border border-lime-600 rounded-xl px-3 py-2 text-lime-200 ">Log In</button>
                             </a>
                             <a href="/Start">
 
-                            <button className="hidden md:inline-flex items-center bg-indigo-600 text-neutral-100 rounded-xl px-3 py-2" >Sign Up</button>
+                            <button className="hidden md:inline-flex items-center bg-lime-600 text-neutral-100 rounded-xl px-3 py-2" >Sign Up</button>
                             </a>
 
                         </div>
