@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 const navLinks = [
     { label: "Home", href: "#" },
     { label: "Features", href: "#feat" },
@@ -19,10 +20,10 @@ export default function Navbar() {
                 <div className="border border-black rounded-[27px] md:rounded-[20px]  bg-gradient-to-l from-slate-50 to-indigo-300/10  text-indigo-600 backdrop-blur">
                     <div className="grid grid-cols-2 lg:grid-cols-3  p-2 px-4 md:pr-2   items-center">
                         <div>
-                            <a href="/">
+                            <Link href="/">
                             {/* <Image src=" " alt="ArthaShastra" width={1000} height={1000} className=" h-16  w-auto" /> */}
                             <p className="text-black font-bold text-2xl">ArthaShastra</p>
-                            </a>
+                            </Link>
                         </div>
                         <div className="lg:flex justify-center items-center hidden">
                             <nav className="flex gap-6 font-medium ">

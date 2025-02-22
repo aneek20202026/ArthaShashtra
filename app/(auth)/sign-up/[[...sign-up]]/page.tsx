@@ -3,6 +3,7 @@ import { SignUp } from '@clerk/nextjs'
 export default function Page() {
   return (
     <>
+    <SignUp/>
     <div className="font-[sans-serif]">
       <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
         <div className="grid md:grid-cols-2 items-center gap-6 max-w-6xl w-full">
