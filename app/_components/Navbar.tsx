@@ -6,8 +6,8 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { AnimatePresence, motion } from "framer-motion";
 const navLinks = [
-    { label: "Founder", href: "#" },
-    { label: "Cofounder", href: "#intro" },
+    { label: "Home", href: "#" },
+    { label: "Features", href: "#feat" },
     { label: "Pricing", href: "#pricing" },
     { label: "FAQs", href: "#faqs" },
 ];
@@ -17,20 +17,20 @@ export default function Navbar() {
     return <>
         <section className="py-4 lg:py-8 fixed w-full top-0 z-50 mx-auto">
             <div className="container max-w-5xl mx-auto">
-                <div className="border border-black rounded-[27px] md:rounded-[20px]  bg-gradient-to-l from-slate-50 to-indigo-300/10  text-white backdrop-blur">
+                <div className="border border-black rounded-[27px] md:rounded-[20px]  bg-gradient-to-l from-slate-50 to-indigo-300/10  text-indigo-600 backdrop-blur">
                     <div className="grid grid-cols-2 lg:grid-cols-3  p-2 px-4 md:pr-2   items-center">
                         <div>
-                            <a href="#">
+                            <a href="/">
                             {/* <Image src=" " alt="ArthaShastra" width={1000} height={1000} className=" h-16  w-auto" /> */}
                             <p className="text-black font-bold text-2xl">ArthaShastra</p>
                             </a>
                         </div>
                         <div className="lg:flex justify-center items-center hidden">
-                            <nav className="flex gap-6 font-medium">
+                            <nav className="flex gap-6 font-medium ">
 
                                 {
                                     navLinks.map((link) => (
-                                        <a key={link.label} href={link.href} className="text-white font-medium hover:text-indigo-300">{link.label}</a>
+                                        <a key={link.label} href={link.href} className="text-indigo-700 font-medium hover:text-indigo-300">{link.label}</a>
                                     ))
                                 }
                             </nav>
@@ -44,11 +44,11 @@ export default function Navbar() {
                                 <line x1="3" y1="6" x2="21" y2="6" className={twMerge("origin-left transition", isOpen && "rotate-45 -translate-y-1")}></line>
                                 <line x1="3" y1="18" x2="21" y2="18" className={twMerge("origin-left transition", isOpen && "-rotate-45 translate-y-1")}></line>
                             </svg>
-                            <a href="/sign-in">
+                            <a href="/Start">
 
-                            <button className="hidden md:inline-flex items-center border border-indigo-600 rounded-xl px-3 py-2">Log In</button>
+                            <button className="hidden md:inline-flex items-center border border-indigo-600 rounded-xl px-3 py-2 text-black ">Log In</button>
                             </a>
-                            <a href="/sign-up">
+                            <a href="/Start">
 
                             <button className="hidden md:inline-flex items-center bg-indigo-600 text-neutral-100 rounded-xl px-3 py-2" >Sign Up</button>
                             </a>
@@ -63,15 +63,15 @@ export default function Navbar() {
                             animate={{height:"auto"}}
                             exit={{height:0}}
                             className="overflow-hidden">
-                                <div className="flex flex-col items-center gap-4 py-4 ">
+                                <div className="flex flex-col font-semibold items-center gap-4 py-4 ">
                                 {navLinks.map((link) => (
                                     <a key={link.label} href={link.href} className="">{link.label}</a>
                                 ))}
-                                 <a href="/Dashboard">
-                                <button className="text-black" >Log In</button>
+                                 <a href="/Start">
+                                <button className="text-indigo-700 border-indigo-700 border-2 rounded-[20px] px-5 py-2" >Log In</button>
                                 </a>
-                                <a href="/Dashboard">
-                                <button >Sign Up</button>
+                                <a href="/Start">
+                                <button className="text-white bg-indigo-700 px-4 py-2 rounded-[20px] ">Sign Up</button>
                                 </a>
                                 </div>
                             </motion.div>}
