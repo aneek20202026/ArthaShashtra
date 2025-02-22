@@ -51,7 +51,7 @@ const Page = () => {
   type="button"
 >
   <div
-    className="bg-indigo-500 rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[400px] md:group-hover:w-[800px] z-10 duration-500"
+    className="bg-indigo-500 rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[392px] md:group-hover:w-[800px] z-10 duration-500"
   >
    <Search className="text-white"/>
   </div>
