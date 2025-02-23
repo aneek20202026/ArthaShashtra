@@ -20,12 +20,23 @@ class User(db.Model):
         self.monthly_budget = monthly_budget
         self.savings = savings
         self.timestamp = timestamp
-
-    def get_columns():
+    
+    def lastData(self):
         return {
-            "industry":"",
-            "annual_revenue":"",
-            "recurring_expenses":"",
-            "monthly_budget":"",
-            "savings":"",
+            "annual_revenue":self.annual_revenue[-1],
+            "recurring_expenses":self.recurring_expenses[-1],
+            "monthly_budget":self.monthly_budget[-1],
+            "savings":self.savings[-1],
         }
+    
+    def fetchData(self):
+        json_data=[{"industry":self.industry}]
+        for index, time in enumerate(self.timestamp):
+            json_data.append({
+                "timestamp":time.strftime("%Y-%m-%d %H:%M:%S"),
+                "annual_revenue":self.annual_revenue[index],
+                "recurring_expenses":self.recurring_expenses[index],
+                "monthly_budget":self.monthly_budget[index],
+                "savings":self.savings[index],
+            })
+        return json_data
