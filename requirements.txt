@@ -8,3 +8,4 @@ statsmodels
 psycopg2-binary
 flask_mail
 reportlab
+requests
