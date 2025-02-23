@@ -6,3 +6,5 @@ dotenv
 scikit-learn
 statsmodels
 psycopg2-binary
+flask_mail
+reportlab

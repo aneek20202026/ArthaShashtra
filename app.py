@@ -1,5 +1,6 @@
 from settings import *
 from model import User
+from helpers import generate_pdf
 from ai_models import predict_revenue, predict_profitability
 
 @app.route('/', methods=['POST','GET'])
@@ -105,9 +106,61 @@ def chatBot():
         )
         # final_data = init_data.append({"role": "assistant", "content": response.choices[0].message.content})
         # final_data = {"role": "assistant", "content": response.choices[0].message.content}
+        print(response.choices[0].message.content)
         return jsonify({"message":response.choices[0].message.content}), 201
     except Exception as e:
         return jsonify({"message":f"Error occured:{str(e)}"}), 500
 
+@app.route('/pdfGenerator', methods=['POST'])
+@cross_origin()
+def send_pdf_email():
+    data = request.json
+    print(data)
+    if not all(key in data for key in ["mail", "prompt","uname"]):
+        return jsonify({"message":"Provide required fields."}), 400
+    
+    try:
+        response=requests.post(
+            'http://localhost:5000/chatBot',
+            json={"chat_history":data.get('prompt')}
+        )
+        if response.status_code == 201:
+            result = response.json()
+            pdf_text=result.get('message')
+        else:
+            return jsonify({"message":response.text}), 400
+
+        pdf_buffer = generate_pdf(pdf_text)
+        msg = Message(
+            subject="🚀 Your Custom Business Plan is Here!",
+            recipients=[data.get('mail')],
+            body=f"""
+Dear {data.get('uname')},
+
+We are excited to share your personalized business plan, crafted with insights from ArthaShastra’s AI-driven advisor. This plan is tailored to your financial details and business vision, helping you make informed decisions and scale strategically.
+
+📄 Attached is your business plan: CostPlanner_ArthaShastra.pdf
+
+Here’s what you’ll find inside:
+✅ Financial Forecasts 📊
+✅ Expense & Budget Analysis 💰
+✅ Growth Strategies 🚀
+✅ Custom AI Insights for Your Business 🧠
+
+We hope this report empowers your business journey! Let us know if you have any questions or need further assistance.
+
+Best Regards,
+The ArthaShastra Team 🏆
+            """
+        )
+        msg.attach("CostPlanner_ArthaShastra.pdf", "application/pdf", pdf_buffer.getvalue())
+
+        mail.send(msg)
+
+        return jsonify({"message":"Email sent successfully!"}), 201
+
+    except Exception as e:
+        return jsonify({"message":f"Error: {str(e)}"}), 500
+    
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=False)
