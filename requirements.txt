@@ -4,4 +4,4 @@ flask_cors
 flask_sqlalchemy
 dotenv
 scikit-learn
-statsmodel
+statsmodels
