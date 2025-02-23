@@ -121,7 +121,7 @@ const Page = () => {
 
       <Growth />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         <div className="flex w-full border-2 border-lime-300 items-center justify-center bg-white rounded-lg backdrop-blur shadow-lg">
           <BarChart
             xAxis={[{ scaleType: "band", data: ["November", "December", "January"] }]}
@@ -138,7 +138,7 @@ const Page = () => {
             height={300}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
