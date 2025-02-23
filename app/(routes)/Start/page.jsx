@@ -29,21 +29,32 @@ function WelcomeForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: userId }),
       });
-
+  
       const data = await response.json();
-      if (data.message && data.message.length > 0) {
+  
+      if (!data.message) {
+        console.warn("No 'message' field in response:", data);
+        setCheckingUser(false);
+        return;
+      }
+  
+      // Ensure `data.message` is an array before calling `.find()`
+      if (Array.isArray(data.message)) {
         const financialData = data.message.find((item) => item.annual_revenue !== undefined);
         if (financialData) {
           console.log("User already has financial data, redirecting...");
           router.push("/Dashboard");
           return;
         }
+      } else {
+        console.warn("Unexpected data format for 'message':", data.message);
       }
     } catch (error) {
       console.error("Error checking user data:", error);
     }
-    setCheckingUser(false); // Hide loader after determining the task
+    setCheckingUser(false); // Hide loader after checking
   };
+  
 
   const showAlert = (message) => {
     setAlertMessage(message);
@@ -113,7 +124,7 @@ function WelcomeForm() {
   return (
     <section className="bg-gray-50 h-screen flex items-center justify-center bg-[url('https://pagedone.io/asset/uploads/1691055810.png')] bg-center bg-cover">
       {alertMessage && (
-        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-md shadow-md">
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-lime-600 text-white px-4 py-2 rounded-md shadow-md">
           {alertMessage}
         </div>
       )}
@@ -121,11 +132,11 @@ function WelcomeForm() {
       {/* Show Loader While Checking User */}
       {checkingUser ? (
         <div className="flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
-          <p className="mt-4 text-white text-lg font-semibold">Checking your details...</p>
+          <div className="w-16 h-16 border-4 border-t-transparent border-black  rounded-full animate-spin"></div>
+          <p className="mt-4 text-lg font-semibold text-gray-800">Checking your details...</p>
         </div>
       ) : (
-        <div className="max-w-md text-center border-indigo-900 border-2 rounded-lg p-6 bg-white/10 backdrop-blur relative">
+        <div className="max-w-md text-center border-lime-900 border-2 rounded-lg p-6 bg-white/10 backdrop-blur relative">
           <h1 className="text-2xl font-extrabold sm:text-3xl mb-4">
             {WelcomeQues[currentIndex].question}
           </h1>
@@ -137,7 +148,7 @@ function WelcomeForm() {
                     onClick={() => handleChange(option)}
                     className={`px-4 py-2 rounded-md border w-full text-center transition duration-300 ${
                       answers[WelcomeQues[currentIndex].question] === option
-                        ? "bg-indigo-600 text-white"
+                        ? "bg-lime-600 text-white"
                         : "border-gray-300 hover:bg-gray-200"
                     }`}
                   >
@@ -166,7 +177,7 @@ function WelcomeForm() {
             {currentIndex < WelcomeQues.length - 1 ? (
               <button
                 onClick={handleNext}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                className="px-4 py-2 bg-lime-600 text-white rounded-md hover:bg-lime-700"
               >
                 Next
               </button>

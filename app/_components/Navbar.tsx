@@ -22,7 +22,8 @@ export default function Navbar() {
                         <div>
                             <Link href="/">
                             {/* <Image src=" " alt="ArthaShastra" width={1000} height={1000} className=" h-16  w-auto" /> */}
-                            <p className="text-gray-200 font-bold text-2xl">ArthaShastra</p>
+                            {/* <p className="text-gray-200 font-bold text-2xl">ArthaShastra</p> */}
+                            <img src="/as.png" className="h-12" alt="" />
                             </Link>
                         </div>
                         <div className="lg:flex justify-center items-center hidden">
